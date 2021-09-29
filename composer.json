@@ -1,0 +1,24 @@
+{
+    "name": "jichangfeng/yun-storage",
+    "type": "library",
+    "description": "Upload attachments to content storage platform like Aliyun OSS, Tencent COS",
+    "homepage": "http://github.com/jichangfeng/yun-storage",
+    "keywords": ["storage", "yun storage", "oss", "aliyun oss", "cos", "tencent cos"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Changfeng Ji",
+            "email": "jichf@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6",
+        "aliyuncs/oss-sdk-php": "^2.4",
+        "qcloud/cos-sdk-v5": "^2.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "YunStorage\\": "./src"
+        }
+    }
+}
