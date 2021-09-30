@@ -2,6 +2,8 @@
 
 Yun storage provides a layer that mediates between a user or configured storage frontend and one or several storage backends.
 
+Note: [jichangfeng/laravel-yun-storage](https://github.com/jichangfeng/laravel-yun-storage) is a simple, but elegant laravel wrapper around yun storage.
+
 # Supported back-end storage
 - [Aliyun OSS](https://www.aliyun.com/product/oss)
 - [Tencent COS](https://cloud.tencent.com/product/cos)
