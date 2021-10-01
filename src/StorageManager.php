@@ -65,6 +65,7 @@ class StorageManager {
      *            'accessKeyId' => '',
      *            'accessKeySecret' => '',
      *            'region' => '',
+     *            'schema' => '',
      *            'appid' => ''
      *        ]
      * 

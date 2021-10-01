@@ -19,6 +19,7 @@ class TencentCosAdapter implements AdapterInterface {
         'accessKeyId' => '',
         'accessKeySecret' => '',
         'region' => '',
+        'schema' => '',
         'appid' => ''
     ];
 
@@ -35,6 +36,7 @@ class TencentCosAdapter implements AdapterInterface {
      *      'accessKeyId  => The AccessKeyId
      *      'accessKeySecret'    => The AccessKeySecret
      *      'region' => The region,
+     *      'schema' => The schema,
      *      'appid' => The appid
      * )
      */
@@ -45,6 +47,7 @@ class TencentCosAdapter implements AdapterInterface {
         }
         $this->client = new Client([
             'region' => $this->config['region'],
+            'schema' => isset($this->config['schema']) && $this->config['schema'] ? $this->config['schema'] : 'http',
             'credentials' => [
                 'secretId' => $this->config['accessKeyId'],
                 'secretKey' => $this->config['accessKeySecret']
