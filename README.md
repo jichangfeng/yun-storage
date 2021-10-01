@@ -43,6 +43,7 @@ try {
         'accessKeyId' => '',
         'accessKeySecret' => '',
         'region' => '',
+        'schema' => '',
         'appid' => ''
     ]);
     //
