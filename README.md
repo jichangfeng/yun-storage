@@ -101,6 +101,12 @@ try {
     //Lists the bucket's object keys
     $storage->listObjectKeys($bucket, $prefix);
     //
+    //Uploads a local file
+    $storage->uploadFile($bucket, $object, $localfile);
+    //
+    //Downloads to local file
+    $storage->downloadFile($bucket, $object, $localfile);
+    //
     // Gets the storage client, return the actual storage object
     $storage->adapter()->client();
 } catch (\Exception $e) {
@@ -120,6 +126,8 @@ try {
     $content = '{"type":"text", "data":{"msg":"some message"}}';
     $content2 = '{"type":"text", "data":{"msg":"other message"}}';
     $prefix = 'aa-bb/cc-dd';
+    $object3 = 'aa-bb/cc-dd/2021-09-26/ee-ff-3.text';
+    $localfile = __FILE__;
     echo 'createBucket: ' . PHP_EOL;
     print_r($storage->createBucket($bucket));
     echo PHP_EOL;
@@ -155,6 +163,15 @@ try {
     echo PHP_EOL;
     echo 'deleteObjects: ' . PHP_EOL;
     print_r($storage->deleteObjects($bucket, [$object, $object2]));
+    echo PHP_EOL;
+    echo 'uploadFile3: ' . PHP_EOL;
+    print_r($storage->uploadFile($bucket, $object3, $localfile));
+    echo PHP_EOL;
+    echo 'downloadFile3: ' . PHP_EOL;
+    print_r($storage->downloadFile($bucket, $object3, $localfile . '.download'));
+    echo PHP_EOL;
+    echo 'deleteFile3: ' . PHP_EOL;
+    print_r($storage->deleteObject($bucket, $object3));
     echo PHP_EOL;
     echo 'deleteBucket: ' . PHP_EOL;
     print_r($storage->deleteBucket($bucket));

@@ -234,4 +234,34 @@ class TencentCosAdapter implements AdapterInterface {
         return $keys;
     }
 
+    /**
+     * Uploads a local file
+     *
+     * @param string $bucket bucket name
+     * @param string $object object name
+     * @param string $localfile local file path
+     * @return object
+     */
+    public function uploadFile($bucket, $object, $localfile) {
+        $bucket .= '-' . $this->config['appid'];
+        return $this->client->upload($bucket, $object, [
+                    'Bucket' => $bucket,
+                    'Key' => $object,
+                    'Body' => fopen($localfile, 'rb')
+        ]);
+    }
+
+    /**
+     * Downloads to local file
+     *
+     * @param string $bucket bucket name
+     * @param string $object object name
+     * @param string $localfile local file path
+     * @return object
+     */
+    public function downloadFile($bucket, $object, $localfile) {
+        $bucket .= '-' . $this->config['appid'];
+        return $this->client->download($bucket, $object, $localfile);
+    }
+
 }

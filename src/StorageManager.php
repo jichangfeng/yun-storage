@@ -19,6 +19,8 @@ use YunStorage\Adapter\TencentCosAdapter;
  * @method object deleteObjects($bucket, $objects) eletes multiple objects in a bucket
  * @method string getObject($bucket, $object) Gets Object content
  * @method array listObjectKeys($bucket, $prefix) Lists the bucket's object keys
+ * @method object uploadFile($bucket, $object, $localfile) Uploads a local file
+ * @method string downloadFile($bucket, $object, $localfile) Downloads to local file
  *
  * @author Changfeng Ji <jichf@qq.com>
  */

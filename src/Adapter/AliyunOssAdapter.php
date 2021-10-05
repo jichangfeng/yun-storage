@@ -185,4 +185,28 @@ class AliyunOssAdapter implements AdapterInterface {
         return $keys;
     }
 
+    /**
+     * Uploads a local file
+     *
+     * @param string $bucket bucket name
+     * @param string $object object name
+     * @param string $localfile local file path
+     * @return object
+     */
+    public function uploadFile($bucket, $object, $localfile) {
+        return $this->client->uploadFile($bucket, $object, $localfile);
+    }
+
+    /**
+     * Downloads to local file
+     *
+     * @param string $bucket bucket name
+     * @param string $object object name
+     * @param string $localfile local file path
+     * @return object
+     */
+    public function downloadFile($bucket, $object, $localfile) {
+        return $this->client->getObject($bucket, $object, [OssClient::OSS_FILE_DOWNLOAD => $localfile]);
+    }
+
 }
