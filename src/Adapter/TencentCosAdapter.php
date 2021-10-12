@@ -130,11 +130,17 @@ class TencentCosAdapter implements AdapterInterface {
      */
     public function putObject($bucket, $object, $content) {
         $bucket .= '-' . $this->config['appid'];
-        return $this->client->putObject([
-                    'Bucket' => $bucket,
-                    'Key' => $object,
-                    'Body' => $content
+        $result = $this->client->putObject([
+            'Bucket' => $bucket,
+            'Key' => $object,
+            'Body' => $content
         ]);
+        return [
+            'url' => isset($result['Location']) ? 'https://' . $result['Location'] : '',
+            'etag' => isset($result['ETag']) ? $result['ETag'] : '',
+            'request-id' => isset($result['RequestId']) ? $result['RequestId'] : '',
+            'raw' => $result
+        ];
     }
 
     /**
@@ -244,7 +250,13 @@ class TencentCosAdapter implements AdapterInterface {
      */
     public function uploadFile($bucket, $object, $localfile) {
         $bucket .= '-' . $this->config['appid'];
-        return $this->client->upload($bucket, $object, fopen($localfile, 'rb'));
+        $result = $this->client->upload($bucket, $object, fopen($localfile, 'rb'));
+        return [
+            'url' => isset($result['Location']) ? 'https://' . $result['Location'] : '',
+            'etag' => isset($result['ETag']) ? $result['ETag'] : '',
+            'request-id' => isset($result['RequestId']) ? $result['RequestId'] : '',
+            'raw' => $result
+        ];
     }
 
     /**

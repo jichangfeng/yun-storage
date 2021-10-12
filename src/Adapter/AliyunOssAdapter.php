@@ -107,7 +107,13 @@ class AliyunOssAdapter implements AdapterInterface {
      * @return object
      */
     public function putObject($bucket, $object, $content) {
-        return $this->client->putObject($bucket, $object, $content);
+        $result = $this->client->putObject($bucket, $object, $content);
+        return [
+            'url' => isset($result['oss-request-url']) ? $result['oss-request-url'] : '',
+            'etag' => isset($result['etag']) ? $result['etag'] : '',
+            'request-id' => isset($result['x-oss-request-id']) ? $result['x-oss-request-id'] : '',
+            'raw' => $result
+        ];
     }
 
     /**
@@ -194,7 +200,13 @@ class AliyunOssAdapter implements AdapterInterface {
      * @return object
      */
     public function uploadFile($bucket, $object, $localfile) {
-        return $this->client->uploadFile($bucket, $object, $localfile);
+        $result = $this->client->uploadFile($bucket, $object, $localfile);
+        return [
+            'url' => isset($result['oss-request-url']) ? $result['oss-request-url'] : '',
+            'etag' => isset($result['etag']) ? $result['etag'] : '',
+            'request-id' => isset($result['x-oss-request-id']) ? $result['x-oss-request-id'] : '',
+            'raw' => $result
+        ];
     }
 
     /**
