@@ -45,9 +45,10 @@ class TencentCosAdapter implements AdapterInterface {
         if (empty($this->config['accessKeyId']) || empty($this->config['accessKeySecret']) || empty($this->config['region']) || empty($this->config['appid'])) {
             throw new \Exception("腾讯云存储缺少配置参数");
         }
+        $this->config['schema'] = isset($this->config['schema']) && $this->config['schema'] ? $this->config['schema'] : 'http';
         $this->client = new Client([
             'region' => $this->config['region'],
-            'schema' => isset($this->config['schema']) && $this->config['schema'] ? $this->config['schema'] : 'http',
+            'schema' => $this->config['schema'],
             'credentials' => [
                 'secretId' => $this->config['accessKeyId'],
                 'secretKey' => $this->config['accessKeySecret']
@@ -113,7 +114,11 @@ class TencentCosAdapter implements AdapterInterface {
         if (isset($bucketList[0]['Bucket']) && isset($bucketList[0]['Bucket'][0]['Name'])) {
             $appidLen = strlen($this->config['appid']);
             foreach ($bucketList[0]['Bucket'] as $bucket) {
-                $buckets[] = substr($bucket['Name'], 0, ($appidLen + 1) * -1);
+                $buckets[] = [
+                    'name' => substr($bucket['Name'], 0, ($appidLen + 1) * -1),
+                    'location' => $bucket['Location'],
+                    'raw' => $bucket
+                ];
             }
             return $buckets;
         }
@@ -136,9 +141,9 @@ class TencentCosAdapter implements AdapterInterface {
             'Body' => $content
         ]);
         return [
-            'url' => isset($result['Location']) ? 'https://' . $result['Location'] : '',
+            'url' => isset($result['Location']) ? $this->config['schema'] . '://' . $result['Location'] : '',
             'etag' => isset($result['ETag']) ? $result['ETag'] : '',
-            'request-id' => isset($result['RequestId']) ? $result['RequestId'] : '',
+            'requestId' => isset($result['RequestId']) ? $result['RequestId'] : '',
             'raw' => $result
         ];
     }
@@ -218,7 +223,7 @@ class TencentCosAdapter implements AdapterInterface {
      */
     public function listObjectKeys($bucket, $prefix) {
         $bucket .= '-' . $this->config['appid'];
-        $keys = [];
+        $data = [];
         $nextMarker = '';
         while (true) {
             $result = $this->client->listObjects([
@@ -229,7 +234,15 @@ class TencentCosAdapter implements AdapterInterface {
             ]);
             if (isset($result['Contents'])) {
                 foreach ($result['Contents'] as $rt) {
-                    $keys[] = $rt['Key'];
+                    $url = $this->config['schema'] . '://' . $bucket . '.cos.' . $this->config['region'] . '.myqcloud.com/' . $rt['Key'];
+                    $data[] = [
+                        'key' => $rt['Key'],
+                        'lastModified' => $rt['LastModified'],
+                        'etag' => $rt['ETag'],
+                        'size' => $rt['Size'],
+                        'url' => $url,
+                        'raw' => $rt
+                    ];
                 }
             }
             $nextMarker = $result['NextMarker'];
@@ -237,7 +250,7 @@ class TencentCosAdapter implements AdapterInterface {
                 break;
             }
         }
-        return $keys;
+        return $data;
     }
 
     /**
@@ -252,9 +265,9 @@ class TencentCosAdapter implements AdapterInterface {
         $bucket .= '-' . $this->config['appid'];
         $result = $this->client->upload($bucket, $object, fopen($localfile, 'rb'));
         return [
-            'url' => isset($result['Location']) ? 'https://' . $result['Location'] : '',
+            'url' => isset($result['Location']) ? $this->config['schema'] . '://' . $result['Location'] : '',
             'etag' => isset($result['ETag']) ? $result['ETag'] : '',
-            'request-id' => isset($result['RequestId']) ? $result['RequestId'] : '',
+            'requestId' => isset($result['RequestId']) ? $result['RequestId'] : '',
             'raw' => $result
         ];
     }

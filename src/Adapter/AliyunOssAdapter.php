@@ -93,7 +93,11 @@ class AliyunOssAdapter implements AdapterInterface {
         $bucketList = $bucketListInfo->getBucketList();
         $buckets = [];
         foreach ($bucketList as $bucket) {
-            $buckets[] = $bucket->getName();
+            $buckets[] = [
+                'name' => $bucket->getName(),
+                'location' => $bucket->getLocation(),
+                'raw' => $bucket
+            ];
         }
         return $buckets;
     }
@@ -111,7 +115,7 @@ class AliyunOssAdapter implements AdapterInterface {
         return [
             'url' => isset($result['oss-request-url']) ? $result['oss-request-url'] : '',
             'etag' => isset($result['etag']) ? $result['etag'] : '',
-            'request-id' => isset($result['x-oss-request-id']) ? $result['x-oss-request-id'] : '',
+            'requestId' => isset($result['x-oss-request-id']) ? $result['x-oss-request-id'] : '',
             'raw' => $result
         ];
     }
@@ -168,7 +172,7 @@ class AliyunOssAdapter implements AdapterInterface {
      * @return array
      */
     public function listObjectKeys($bucket, $prefix) {
-        $keys = [];
+        $data = [];
         $nextMarker = '';
         while (true) {
             $options = array(
@@ -181,14 +185,31 @@ class AliyunOssAdapter implements AdapterInterface {
             $listObject = $listObjectInfo->getObjectList();
             if (!empty($listObject)) {
                 foreach ($listObject as $objectInfo) {
-                    $keys[] = $objectInfo->getKey();
+                    $schema = 'https';
+                    $endpoint = $this->config['endpoint'];
+                    if(substr($this->config['endpoint'], 0, 8) == 'https://'){
+                        $schema = 'https';
+                        $endpoint = substr($this->config['endpoint'], 8);
+                    } else  if(substr($this->config['endpoint'], 0, 7) == 'http://'){
+                        $schema = 'http';
+                        $endpoint = substr($this->config['endpoint'], 7);
+                    }
+                    $url = $schema . '://' . $bucket . '.' . $endpoint . '/' . $objectInfo->getKey();
+                    $data[] = [
+                        'key' => $objectInfo->getKey(),
+                        'lastModified' => $objectInfo->getLastModified(),
+                        'etag' => $objectInfo->getETag(),
+                        'size' => $objectInfo->getSize(),
+                        'url' => $url,
+                        'raw' => $objectInfo
+                    ];
                 }
             }
             if ($listObjectInfo->getIsTruncated() !== "true") {
                 break;
             }
         }
-        return $keys;
+        return $data;
     }
 
     /**
@@ -204,7 +225,7 @@ class AliyunOssAdapter implements AdapterInterface {
         return [
             'url' => isset($result['oss-request-url']) ? $result['oss-request-url'] : '',
             'etag' => isset($result['etag']) ? $result['etag'] : '',
-            'request-id' => isset($result['x-oss-request-id']) ? $result['x-oss-request-id'] : '',
+            'requestId' => isset($result['x-oss-request-id']) ? $result['x-oss-request-id'] : '',
             'raw' => $result
         ];
     }
