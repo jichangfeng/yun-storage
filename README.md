@@ -1,5 +1,9 @@
 # Overview
 
+[![Latest Stable Version](https://poser.pugx.org/jichangfeng/yun-storage/v/stable.png)](https://packagist.org/packages/jichangfeng/yun-storage)
+[![Total Downloads](https://poser.pugx.org/jichangfeng/yun-storage/downloads.png)](https://packagist.org/packages/jichangfeng/yun-storage)
+[![License](https://poser.pugx.org/jichangfeng/yun-storage/license.png)](https://packagist.org/packages/jichangfeng/yun-storage)
+
 Yun storage provides a layer that mediates between a user or configured storage frontend and one or several storage backends.
 
 Note: [jichangfeng/laravel-yun-storage](https://github.com/jichangfeng/laravel-yun-storage) is a simple, but elegant laravel wrapper around yun storage.
